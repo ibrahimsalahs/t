@@ -1,0 +1,293 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071019">
+<title>نظام النقاط | EduSpace</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;font-family:Arial,Tahoma,sans-serif;background:#071019;color:#f8f5ff}
+body{padding:14px;background:radial-gradient(ellipse at 10% 0%,#bd4bc526,transparent 38%),radial-gradient(ellipse at 100% 25%,#7853df24,transparent 38%),linear-gradient(145deg,#071019,#0d202b,#08141d);background-attachment:fixed}
+.container{width:100%;max-width:900px;margin:auto}
+.header{text-align:center;padding:13px 8px 20px;position:relative}
+.settings-btn{position:absolute;top:12px;right:0;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 12px;border:1px solid #654c88;border-radius:10px;background:linear-gradient(110deg,#292043,#19313e);color:#e9dcff;font-weight:bold;font-family:inherit;font-size:12px;text-decoration:none;cursor:pointer}
+.logo{width:58px;height:58px;margin:0 auto 12px;border-radius:19px;display:flex;align-items:center;justify-content:center;font-size:28px;color:#fff;background:linear-gradient(135deg,#ed62cf,#9656f5,#00c7a2);box-shadow:0 0 27px #b74fd94d}
+h1{font-size:24px;margin:0 0 8px;color:#fff;text-shadow:0 0 15px #d879ff70}
+.subtitle{font-size:12px;color:#c9c3df;line-height:1.8}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.summary-box{background:linear-gradient(145deg,#102530f5,#101727f7);border:1px solid #bd73e33d;border-radius:14px;padding:13px;text-align:center}
+.summary-label{font-size:12px;color:#c9c3df;margin-bottom:7px}
+.summary-value{font-size:20px;font-weight:bold;color:#5ee0c7;text-shadow:0 0 12px #00c7a226;overflow-wrap:anywhere}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:linear-gradient(145deg,#102530f5,#101727f7);border:1px solid #bd73e33d;border-radius:15px;padding:12px;margin-bottom:14px}
+.student-title{font-size:15px;color:#f2d5ff;font-weight:bold}
+.student-subtitle{font-size:11px;color:#bcb5d2;margin-top:5px}
+.refresh-btn{border:1px solid #654c88;border-radius:10px;padding:11px 13px;background:linear-gradient(110deg,#292043,#19313e);color:#e9dcff;font-weight:bold;font-family:inherit;font-size:12px;cursor:pointer}
+.search-area{display:flex;gap:9px;align-items:end;width:100%}
+.search-field{flex:1;min-width:0}
+.search-label{display:block;font-size:12px;color:#f2d5ff;margin-bottom:7px}
+.search-input{width:100%;height:44px;padding:10px 12px;border:1px solid #654c88;border-radius:10px;background:#071019;color:#fff;font-size:16px;outline:none}
+.search-input:focus{border-color:#e06dce;box-shadow:0 0 0 3px #d45bd21c}
+.go-btn{height:44px;padding:0 16px;border:0;border-radius:10px;background:linear-gradient(110deg,#a347d1,#7653e8);color:#fff;font-weight:bold;font-family:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{min-width:0;background:linear-gradient(145deg,#102530f5,#101727f7);border:1px solid #bd73e344;border-radius:16px;padding:13px;box-shadow:0 8px 24px #0002;overflow:hidden}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #ffffff12}
+.card-title{font-size:14px;font-weight:bold;color:#f1c8ff}
+.card-number{font-size:11px;color:#bdf7e8;background:#00c7a219;border:1px solid #00c7a24d;padding:5px 8px;border-radius:20px;white-space:nowrap}
+.field{padding:10px;margin-bottom:8px;border-radius:10px;background:#0710198c;border:1px solid #ffffff0b;min-width:0}
+.field:last-child{margin-bottom:0}
+.field-label{font-size:11px;color:#bcb5d2;margin-bottom:6px}
+.field-value{font-size:13px;color:#fff;font-weight:bold;line-height:1.7;overflow-wrap:anywhere;white-space:pre-wrap}
+.field.details{border-right:3px solid #b95bdf}
+.field.good{border-right:3px solid #00c7a2}
+.field.bad{border-right:3px solid #ed62a5}
+.field.points{border-right:3px solid #9271ff}
+.field.good .field-value{color:#5ee0c7}
+.field.bad .field-value{color:#ff91c1}
+.field.points .field-value{color:#c6aaff;text-shadow:0 0 10px #9271ff30}
+.empty{padding:36px 16px;text-align:center;color:#c9c3df;background:#101727c9;border:1px solid #bd73e33d;border-radius:15px;line-height:2;font-size:14px}
+.banner{display:none;padding:12px 14px;border-radius:11px;margin-bottom:13px;font-size:13px;line-height:1.8;overflow-wrap:anywhere}
+.banner.show{display:block}
+.banner.success{color:#b7ffe8;background:#0d332d;border:1px solid #16866a}
+.banner.error{color:#ffd4e9;background:#391b30;border:1px solid #a84979}
+.banner.loading{color:#ead7ff;background:#251d3c;border:1px solid #7551a5}
+.navigation{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:9px;margin-top:15px;padding:12px;background:linear-gradient(145deg,#102530f5,#101727f7);border:1px solid #bd73e33d;border-radius:15px}
+.nav-btn{font-family:inherit;border:0;border-radius:10px;padding:13px 8px;font-size:13px;font-weight:bold;cursor:pointer;color:#fff;background:linear-gradient(110deg,#a347d1,#7653e8)}
+.nav-btn.next{background:linear-gradient(110deg,#008f7a,#1769aa)}
+.nav-btn:disabled{opacity:.35;cursor:not-allowed}
+.nav-info{text-align:center;font-size:11px;color:#c9c3df;line-height:1.8;min-width:65px}
+.footer{text-align:center;color:#9e9ab7;font-size:11px;padding:18px 0 10px}
+button:active,.settings-btn:active{transform:scale(.98)}
+button:disabled{cursor:wait}
+@media(max-width:560px){body{padding:10px}.header{padding:52px 8px 17px}h1{font-size:22px}.settings-btn{top:5px;right:0}.cards{grid-template-columns:1fr;gap:10px}.card{padding:12px}.toolbar{padding:11px}.student-title{font-size:14px}.navigation{gap:6px;padding:9px}.nav-btn{font-size:12px;padding:12px 5px}.nav-info{font-size:10px}.summary-box{padding:11px}.summary-value{font-size:18px}.search-area{gap:7px}.go-btn{padding:0 12px}}
+</style>
+</head>
+<body>
+<div class="container">
+<header class="header">
+<a class="settings-btn" href="13.html" aria-label="إعدادات ضبط النقاط">⚙️ ضبط النقاط</a>
+<div class="logo">✦</div>
+<h1>نظام النقاط</h1>
+<div class="subtitle">EduSpace · عرض التقييمات وبيانات الاشتراكات</div>
+</header>
+<div id="banner" class="banner" role="status" aria-live="polite"></div>
+<section class="summary">
+<div class="summary-box">
+<div class="summary-label">رقم الصف الحالي</div>
+<div id="rowNumber" class="summary-value">—</div>
+</div>
+<div class="summary-box">
+<div class="summary-label">الاشتراكات المسجلة</div>
+<div id="subscriptionCount" class="summary-value">—</div>
+</div>
+</section>
+<section class="toolbar">
+<div>
+<div id="studentTitle" class="student-title">جاري تحميل البيانات...</div>
+<div id="studentSubtitle" class="student-subtitle">عرض فقط · لا يمكن تعديل البيانات</div>
+</div>
+<button id="refreshBtn" class="refresh-btn" type="button">↻ تحديث البيانات</button>
+</section>
+<section class="toolbar">
+<div class="search-area">
+<div class="search-field">
+<label class="search-label" for="studentCode">إدخال كود الطالب (رقم الصف)</label>
+<input id="studentCode" class="search-input" type="number" min="2" step="1" inputmode="numeric" placeholder="مثال: 25">
+</div>
+<button id="goStudentBtn" class="go-btn" type="button">عرض الطالب</button>
+</div>
+</section>
+<main id="cards" class="cards">
+<div class="empty" style="grid-column:1/-1">جاري تحميل بيانات الاشتراكات...</div>
+</main>
+<nav class="navigation">
+<button id="prevBtn" class="nav-btn" type="button" disabled>→ الطالب السابق</button>
+<div id="navInfo" class="nav-info">جاري التحميل</div>
+<button id="nextBtn" class="nav-btn next" type="button" disabled>الطالب التالي ←</button>
+</nav>
+<div class="footer">EduSpace · المنصة التعليمية</div>
+</div>
+<script>
+const API_URL="https://script.google.com/macros/s/AKfycbz1iA_MNG50b-ZQgwNb8ib5zgXkjH8ImW0oc0PVZXaAqGL_jzNwlUhRK4pBcxOyGTxQ/exec";
+const FIRST_ROW=2;
+const $=id=>document.getElementById(id);
+let currentStudent=null;
+let lastRow=0;
+let loading=false;
+let historyRows=[];
+let cache={};
+let requestToken=0;
+function showBanner(message,type="loading"){
+$("banner").textContent=message;
+$("banner").className="banner show "+type;
+}
+function hideBanner(){
+$("banner").textContent="";
+$("banner").className="banner";
+}
+function setBusy(value){
+loading=value;
+$("refreshBtn").disabled=value;
+$("goStudentBtn").disabled=value;
+$("prevBtn").disabled=value||historyRows.length===0;
+$("nextBtn").disabled=value||!currentStudent;
+}
+function showEmpty(message){
+$("cards").replaceChildren();
+const div=document.createElement("div");
+div.className="empty";
+div.style.gridColumn="1/-1";
+div.textContent=message;
+$("cards").appendChild(div);
+}
+function makeField(label,value,type){
+const field=document.createElement("div");
+field.className="field "+type;
+const title=document.createElement("div");
+title.className="field-label";
+title.textContent=label;
+const content=document.createElement("div");
+content.className="field-value";
+content.textContent=value||"—";
+field.append(title,content);
+return field;
+}
+function renderStudent(student){
+currentStudent=student;
+if(!student){
+$("rowNumber").textContent="—";
+$("subscriptionCount").textContent="0";
+$("studentTitle").textContent="لا توجد بيانات";
+$("studentSubtitle").textContent="لم يتم العثور على اشتراكات مسجلة";
+showEmpty("لم يتم العثور على اشتراكات مسجلة ابتداءً من الصف المطلوب.");
+$("prevBtn").disabled=historyRows.length===0;
+$("nextBtn").disabled=true;
+$("navInfo").textContent="لا توجد بيانات";
+return;
+}
+const subs=student.subscriptions||[];
+$("rowNumber").textContent=student.row;
+$("subscriptionCount").textContent=subs.length+" من 15";
+$("studentTitle").textContent="الطالب · صف الشيت "+student.row;
+$("studentSubtitle").textContent="تظهر الاشتراكات التي تحتوي على بيانات فقط";
+$("studentCode").value=student.row;
+$("cards").replaceChildren();
+if(!subs.length){
+showEmpty("لا توجد اشتراكات مسجلة في هذا الصف.");
+}else{
+subs.forEach(sub=>{
+const card=document.createElement("article");
+card.className="card";
+const head=document.createElement("div");
+head.className="card-head";
+const title=document.createElement("div");
+title.className="card-title";
+title.textContent="بيانات الاشتراك";
+const number=document.createElement("div");
+number.className="card-number";
+number.textContent="الاشتراك "+sub.number;
+head.append(title,number);
+card.appendChild(head);
+card.append(
+makeField("بيانات الاشتراك",sub.details,"details"),
+makeField("تقييم جيد",sub.good,"good"),
+makeField("تقييم سيئ",sub.bad,"bad"),
+makeField("النقاط",sub.points,"points")
+);
+$("cards").appendChild(card);
+});
+}
+$("navInfo").textContent="صف "+student.row;
+$("prevBtn").disabled=historyRows.length===0;
+$("nextBtn").disabled=false;
+}
+async function fetchStudent(startRow,remember=true){
+if(loading)return;
+if(!API_URL.startsWith("https://script.google.com/")){showBanner("ضع رابط نشر Apps Script الصحيح داخل API_URL أولًا.","error");return}
+const token=++requestToken;
+setBusy(true);
+showBanner("جاري جلب بيانات الطالب...","loading");
+try{
+let student=null;
+let scanRow=startRow;
+while(scanRow<=Math.max(lastRow,scanRow)){
+if(cache[scanRow]){
+const cached=cache[scanRow];
+if(cached&&cached.subscriptions&&cached.subscriptions.length){student=cached;break}
+scanRow=cached.nextRow||scanRow+1;
+continue;
+}
+const response=await fetch(API_URL+"?action=getStudent&row="+encodeURIComponent(scanRow)+"&_="+Date.now(),{cache:"no-store"});
+const data=await response.json();
+if(token!==requestToken)return;
+if(!data.success)throw new Error(data.message||"تعذر جلب البيانات");
+lastRow=Number(data.lastRow||lastRow||0);
+if(!data.student){student=null;break}
+student=data.student;
+cache[student.row]=student;
+break;
+}
+if(token!==requestToken)return;
+if(student){
+renderStudent(student);
+showBanner("تم تحميل بيانات الطالب بنجاح.","success");
+setTimeout(()=>{if($("banner").classList.contains("success"))hideBanner()},1800);
+}else{
+renderStudent(null);
+showBanner("لم يتم العثور على اشتراكات ابتداءً من هذا الصف.","error");
+}
+}catch(error){
+if(token!==requestToken)return;
+showBanner(error.message||"تعذر الاتصال بالخادم.","error");
+}finally{
+if(token===requestToken)setBusy(false);
+}
+}
+async function goToStudent(){
+if(loading)return;
+const raw=$("studentCode").value.trim();
+const row=Number(raw);
+if(!raw||!Number.isInteger(row)||row<FIRST_ROW){
+showBanner("أدخل رقم صف صحيحًا يبدأ من "+FIRST_ROW+".","error");
+return;
+}
+historyRows=[];
+currentStudent=null;
+cache[row]=undefined;
+await fetchStudent(row);
+}
+async function nextStudent(){
+if(loading||!currentStudent)return;
+const currentRow=currentStudent.row;
+historyRows.push(currentRow);
+await fetchStudent(currentRow+1);
+}
+async function previousStudent(){
+if(loading||!historyRows.length)return;
+const previousRow=historyRows.pop();
+if(cache[previousRow]){
+renderStudent(cache[previousRow]);
+hideBanner();
+return;
+}
+await fetchStudent(previousRow);
+}
+async function refreshStudent(){
+if(loading)return;
+if(!currentStudent){
+await fetchStudent(FIRST_ROW);
+return;
+}
+const row=currentStudent.row;
+delete cache[row];
+await fetchStudent(row);
+}
+$("nextBtn").addEventListener("click",nextStudent);
+$("prevBtn").addEventListener("click",previousStudent);
+$("refreshBtn").addEventListener("click",refreshStudent);
+$("goStudentBtn").addEventListener("click",goToStudent);
+$("studentCode").addEventListener("keydown",event=>{
+if(event.key==="Enter")goToStudent();
+});
+fetchStudent(FIRST_ROW);
+</script>
+</body>
+</html>
