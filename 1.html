@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>إضافة حصة</title>
+<style>*{box-sizing:border-box;margin:0;padding:0;font-family:Tahoma,Arial,sans-serif;-webkit-user-select:none;user-select:none}
+body{min-height:100vh;background:#071019;color:#fff;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:-3;background:radial-gradient(circle at 90% 5%,#00c7a044 0,transparent 28%),radial-gradient(circle at 5% 80%,#1976d235 0,transparent 30%),linear-gradient(145deg,#071019,#0d202b 55%,#08141d)}
+.container{width:100%;max-width:900px;margin:auto;padding:25px 17px 50px}
+.card{background:linear-gradient(145deg,#102530,#0b1922);border:1px solid #ffffff0d;border-radius:21px;padding:20px;margin-bottom:18px;box-shadow:0 10px 25px #00000025}
+h1{margin:0 0 20px;text-align:center;font-size:26px}
+h2{margin:0 0 15px;font-size:19px}
+label{display:block;margin-bottom:7px;font-weight:bold;font-size:13px}
+input,select,button{width:100%;height:46px;border-radius:11px;font-family:inherit;font-size:15px}
+input,select{border:1px solid #344866;padding:0 12px;background:#0d1c26;color:#fff;outline:none;-webkit-user-select:text;user-select:text}
+input:focus,select:focus{outline:none;border-color:#00b89e;box-shadow:0 0 0 2px #00b89e18}
+button{border:0;background:linear-gradient(135deg,#008f7a,#1769aa);color:#fff;font-weight:bold;cursor:pointer;padding:0 12px}
+button:disabled{opacity:.55;cursor:not-allowed}
+.form-group{margin-bottom:15px}
+.teacher-data{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.data-box{border:1px solid #ffffff0d;border-radius:12px;padding:12px;background:#0d1c26}
+.data-title{font-size:12px;color:#7f96a5;margin-bottom:7px}
+.data-value{font-weight:bold;min-height:20px;word-break:break-word;color:#fff}
+.status{display:none;margin-top:15px;padding:12px;border-radius:10px;line-height:1.7;font-size:13px}
+.status.success{display:block;background:#123c2a;color:#a7f3d0;border:1px solid #00b89e30}
+.status.error{display:block;background:#431b24;color:#fecaca;border:1px solid #ff826b30}
+.status.loading{display:block;background:#17243a;color:#cbd5e1;border:1px solid #344866}
+.lessons-wrapper{width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;border:1px solid #ffffff0d;border-radius:12px;direction:ltr;background:#0d1c26}
+.lessons-table{width:max-content;min-width:100%;border-collapse:collapse;direction:rtl}
+.lessons-table th,.lessons-table td{border:1px solid #ffffff0d;padding:12px;text-align:center;white-space:nowrap;min-width:125px}
+.lessons-table th{background:#123c39;color:#fff}
+.lessons-table td{background:#0d1c26;color:#fff}
+.lesson-number{font-weight:bold;color:#5ee0c7}
+.add-area{margin-top:15px}
+.send-area{margin-top:10px}
+.hidden{display:none!important}
+@media(max-width:700px){.teacher-data{grid-template-columns:repeat(2,1fr)}.container{width:96%;padding:18px 12px 40px}.card{padding:15px;border-radius:18px}.lessons-table th,.lessons-table td{min-width:115px;padding:10px}}
+@media(max-width:420px){.teacher-data{grid-template-columns:1fr}h1{font-size:22px}}
+@media(min-width:700px){.container{padding:35px 25px 60px}.card{padding:24px;border-radius:25px}h1{font-size:32px}h2{font-size:21px}}</style>
+</head>
+<body>
+<div class="container">
+<div class="card">
+<h1>إضافة حصة</h1>
+<div class="form-group">
+<label for="teacherId">اى دى المعلم</label>
+<input id="teacherId" type="text" inputmode="numeric" autocomplete="off" placeholder="اكتب اى دى المعلم">
+</div>
+<button id="teacherSendButton" type="button">إرسال</button>
+<div id="teacherResponse" class="status"></div>
+</div>
+<div id="teacherCard" class="card hidden">
+<h2>بيانات المعلم</h2>
+<div class="teacher-data">
+<div class="data-box">
+<div class="data-title">اسم المعلم</div>
+<div id="teacherName" class="data-value"></div>
+</div>
+<div class="data-box">
+<div class="data-title">كود المعلم</div>
+<div id="teacherCode" class="data-value"></div>
+</div>
+<div class="data-box">
+<div class="data-title">المادة</div>
+<div id="teacherSubject" class="data-value"></div>
+</div>
+<div class="data-box">
+<div class="data-title">واتساب</div>
+<div id="teacherWhatsapp" class="data-value"></div>
+</div>
+</div>
+</div>
+<div id="subscriptionCard" class="card hidden">
+<h2>اختيار الاشتراك</h2>
+<div class="form-group">
+<label for="subscriptionSelect">الطالب والاشتراك</label>
+<select id="subscriptionSelect">
+<option value="">اختر الطالب والاشتراك</option>
+</select>
+</div>
+<div id="subscriptionResponse" class="status"></div>
+</div>
+<div id="lessonsCard" class="card hidden">
+<h2>حصص الطالب</h2>
+<div class="lessons-wrapper">
+<table class="lessons-table">
+<thead>
+<tr id="lessonsHead"></tr>
+</thead>
+<tbody>
+<tr id="lessonsBody"></tr>
+</tbody>
+</table>
+</div>
+<div class="add-area">
+<button id="addLessonButton" type="button">إضافة الحصة الجديدة</button>
+</div>
+<div id="sendArea" class="send-area hidden">
+<button id="sendLessonButton" type="button">إرسال الحصة</button>
+</div>
+<div id="lessonResponse" class="status"></div>
+</div>
+</div>
+<script>
+const API_URL="https://script.google.com/macros/s/AKfycbxeFIWiddyhkXpgT2w8WlqqfjaDV--ovunr82nFbb1f1DVYKYTp0q28AgxeKW7JpEQEMQ/exec";
+const state={teacher:null,subscriptions:[],selectedSubscription:null,lessons:[],pendingLesson:null};
+const teacherIdInput=document.getElementById("teacherId");
+const teacherSendButton=document.getElementById("teacherSendButton");
+const teacherResponse=document.getElementById("teacherResponse");
+const teacherCard=document.getElementById("teacherCard");
+const subscriptionCard=document.getElementById("subscriptionCard");
+const subscriptionSelect=document.getElementById("subscriptionSelect");
+const subscriptionResponse=document.getElementById("subscriptionResponse");
+const lessonsCard=document.getElementById("lessonsCard");
+const lessonsHead=document.getElementById("lessonsHead");
+const lessonsBody=document.getElementById("lessonsBody");
+const addLessonButton=document.getElementById("addLessonButton");
+const sendArea=document.getElementById("sendArea");
+const sendLessonButton=document.getElementById("sendLessonButton");
+const lessonResponse=document.getElementById("lessonResponse");
+function showResponse(element,type,message){element.className="status "+type;element.textContent=message||""}
+function clearResponse(element){element.className="status";element.textContent=""}
+function setLoading(button,loading,normalText){button.disabled=loading;button.textContent=loading?"جارى الإرسال...":normalText}
+async function sendRequest(request){const response=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(request)});const text=await response.text();let result;try{result=JSON.parse(text)}catch(error){throw new Error("تعذر قراءة استجابة السيرفر")}return result}
+function resetTeacherData(){state.teacher=null;state.subscriptions=[];state.selectedSubscription=null;state.lessons=[];state.pendingLesson=null;teacherCard.classList.add("hidden");subscriptionCard.classList.add("hidden");lessonsCard.classList.add("hidden");subscriptionSelect.innerHTML='<option value="">اختر الطالب والاشتراك</option>';lessonsHead.innerHTML="";lessonsBody.innerHTML="";sendArea.classList.add("hidden");addLessonButton.disabled=false;clearResponse(subscriptionResponse);clearResponse(lessonResponse)}
+async function getTeacherData(){const teacherId=teacherIdInput.value.trim();resetTeacherData();clearResponse(teacherResponse);if(!teacherId){showResponse(teacherResponse,"error","لم يتم إدخال اى دى المعلم");return}if(!/^\d+$/.test(teacherId)){showResponse(teacherResponse,"error","اى دى المعلم غير صحيح");return}setLoading(teacherSendButton,true,"إرسال");try{const result=await sendRequest({page:"teachers",action:"get_teacher_data",teacherId:teacherId});if(!result||result.success!==true){showResponse(teacherResponse,"error",result&&result.message?result.message:"حدث خطأ أثناء جلب بيانات المعلم");return}if(!result.data||!result.data.teacher){showResponse(teacherResponse,"error","لم تصل بيانات المعلم من السيرفر");return}state.teacher=result.data.teacher;state.subscriptions=Array.isArray(result.data.subscriptions)?result.data.subscriptions:[];document.getElementById("teacherName").textContent=state.teacher.name||"";document.getElementById("teacherCode").textContent=state.teacher.code||"";document.getElementById("teacherSubject").textContent=state.teacher.subject||"";document.getElementById("teacherWhatsapp").textContent=state.teacher.whatsapp||"";teacherCard.classList.remove("hidden");subscriptionCard.classList.remove("hidden");subscriptionSelect.innerHTML='<option value="">اختر الطالب والاشتراك</option>';state.subscriptions.forEach(function(subscription,index){const option=document.createElement("option");option.value=String(index);option.textContent=subscription.studentName+" | كود الطالب: "+subscription.studentCode+" | الاشتراك: "+subscription.subscriptionNumber;subscriptionSelect.appendChild(option)});showResponse(teacherResponse,"success",result.message||"تم جلب بيانات المعلم بنجاح");if(state.subscriptions.length===0)showResponse(subscriptionResponse,"error","لا توجد اشتراكات لهذا المعلم")}catch(error){showResponse(teacherResponse,"error",error.message||"تعذر الاتصال بالسيرفر")}finally{setLoading(teacherSendButton,false,"إرسال")}}
+async function getStudentLessons(){const selectedIndex=subscriptionSelect.value;state.selectedSubscription=null;state.lessons=[];state.pendingLesson=null;lessonsCard.classList.add("hidden");lessonsHead.innerHTML="";lessonsBody.innerHTML="";sendArea.classList.add("hidden");addLessonButton.disabled=false;clearResponse(lessonResponse);clearResponse(subscriptionResponse);if(selectedIndex==="")return;const subscription=state.subscriptions[Number(selectedIndex)];if(!subscription){showResponse(subscriptionResponse,"error","الاشتراك المحدد غير موجود");return}state.selectedSubscription=subscription;showResponse(subscriptionResponse,"loading","جارى التحقق من بيانات الطالب والاشتراك...");try{const result=await sendRequest({page:"teachers",action:"get_student_lessons",teacherName:state.teacher.name,teacherCode:state.teacher.code,studentName:subscription.studentName,studentCode:subscription.studentCode,subscriptionNumber:subscription.subscriptionNumber});if(!result||result.success!==true){showResponse(subscriptionResponse,"error",result&&result.message?result.message:"حدث خطأ أثناء جلب الحصص");return}if(!result.data){showResponse(subscriptionResponse,"error","لم تصل بيانات الحصص من السيرفر");return}state.lessons=Array.isArray(result.data.lessons)?result.data.lessons:[];renderLessons();lessonsCard.classList.remove("hidden");showResponse(subscriptionResponse,"success",result.message||"تم جلب الحصص بنجاح")}catch(error){showResponse(subscriptionResponse,"error",error.message||"تعذر الاتصال بالسيرفر")}}
+function renderLessons(){lessonsHead.innerHTML="";lessonsBody.innerHTML="";if(state.lessons.length===0){const th=document.createElement("th");th.textContent="الحصص";lessonsHead.appendChild(th);const td=document.createElement("td");td.textContent="لا توجد حصص مسجلة";lessonsBody.appendChild(td);return}state.lessons.forEach(function(lesson,index){const th=document.createElement("th");th.className="lesson-number";th.textContent="الحصة "+(index+1);lessonsHead.appendChild(th);const td=document.createElement("td");td.textContent=lesson;lessonsBody.appendChild(td)})}
+function getArabicLessonNumber(number){const values=["الأولى","الثانية","الثالثة","الرابعة","الخامسة","السادسة","السابعة","الثامنة","التاسعة","العاشرة","الحادية عشرة","الثانية عشرة","الثالثة عشرة","الرابعة عشرة","الخامسة عشرة","السادسة عشرة","السابعة عشرة","الثامنة عشرة","التاسعة عشرة","العشرون","الحادية والعشرون","الثانية والعشرون","الثالثة والعشرون","الرابعة والعشرون","الخامسة والعشرون","السادسة والعشرون","السابعة والعشرون","الثامنة والعشرون","التاسعة والعشرون","الثلاثون"];return values[number-1]||String(number)}
+function getCurrentDate(){const date=new Date();const day=String(date.getDate()).padStart(2,"0");const month=String(date.getMonth()+1).padStart(2,"0");return day+"-"+month}
+function addLessonToTable(){if(!state.teacher||!state.selectedSubscription)return;if(state.pendingLesson)return;if(state.lessons.length>=30){showResponse(lessonResponse,"error","تم الوصول إلى الحد الأقصى وهو 30 حصة");return}const lessonNumber=state.lessons.length+1;state.pendingLesson="("+getArabicLessonNumber(lessonNumber)+"/"+getCurrentDate()+")";state.lessons.push(state.pendingLesson);renderLessons();addLessonButton.disabled=true;sendArea.classList.remove("hidden");clearResponse(lessonResponse);showResponse(lessonResponse,"loading","تم تجهيز الحصة الجديدة، اضغط إرسال الحصة لتأكيد الإضافة")}
+async function sendLesson(){if(!state.teacher||!state.selectedSubscription||!state.pendingLesson){showResponse(lessonResponse,"error","لا توجد حصة جاهزة للإرسال");return}const lessonToSend=state.pendingLesson;setLoading(sendLessonButton,true,"إرسال الحصة");addLessonButton.disabled=true;try{const result=await sendRequest({page:"teachers",action:"add_student_lesson",teacherName:state.teacher.name,teacherCode:state.teacher.code,studentName:state.selectedSubscription.studentName,studentCode:state.selectedSubscription.studentCode,subscriptionNumber:state.selectedSubscription.subscriptionNumber,lesson:lessonToSend});if(!result||result.success!==true){state.lessons.pop();state.pendingLesson=null;renderLessons();showResponse(lessonResponse,"error",result&&result.message?result.message:"حدث خطأ أثناء إرسال الحصة");addLessonButton.disabled=false;return}state.pendingLesson=null;sendArea.classList.add("hidden");addLessonButton.disabled=true;showResponse(lessonResponse,"success",result.message||"تمت إضافة الحصة بنجاح")}catch(error){showResponse(lessonResponse,"error",error.message||"تعذر الاتصال بالسيرفر")}finally{setLoading(sendLessonButton,false,"إرسال الحصة")}}
+teacherSendButton.addEventListener("click",getTeacherData);
+subscriptionSelect.addEventListener("change",getStudentLessons);
+addLessonButton.addEventListener("click",addLessonToTable);
+sendLessonButton.addEventListener("click",sendLesson);
+teacherIdInput.addEventListener("keydown",function(event){if(event.key==="Enter")getTeacherData()});
+</script>
+    <script src="auth.js"></script>
+</body>
+</html>
