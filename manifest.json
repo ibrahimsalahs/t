@@ -1,0 +1,19 @@
+{
+"name":"Management",
+"short_name":"Management",
+"id":"./management",
+"description":"Management - لوحة إدارة المنصة التعليمية",
+"start_url":"./index.html",
+"scope":"./",
+"display":"standalone",
+"display_override":["standalone","minimal-ui"],
+"orientation":"portrait-primary",
+"background_color":"#10091a",
+"theme_color":"#160b24",
+"lang":"ar",
+"dir":"rtl",
+"icons":[
+{"src":"./icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+{"src":"./icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+]
+}
