@@ -1,0 +1,5 @@
+const CACHE_NAME='eduspace-v7';
+const FILES=['./','./index.html','./1.html','./2.html','./3.html','./4.html','./5.html','./6.html','./7.html','./8.html','./9.html','./10.html','./11.html','./12.html','./13.html','./manifest.json','./icon-192.png','./icon-512.png'];
+self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()))});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('eduspace-')&&k!==CACHE_NAME).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
+self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const url=new URL(e.request.url);if(url.origin!==self.location.origin)return;e.respondWith(caches.match(e.request).then(cached=>{if(cached)return cached;return fetch(e.request).then(response=>{if(response.ok){const copy=response.clone();caches.open(CACHE_NAME).then(c=>c.put(e.request,copy))}return response}).catch(()=>{if(e.request.mode==='navigate')return caches.match('./index.html');return Response.error()})}))});
